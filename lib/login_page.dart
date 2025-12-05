@@ -1,108 +1,60 @@
 import 'package:flutter/material.dart';
 import 'api_service.dart';
-import 'login_page.dart'; 
+import 'main.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  final ApiService api = ApiService();
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: RegisterPage(api: api),
-    );
-  }
-}
-
-class RegisterPage extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   final ApiService api;
 
-  RegisterPage({required this.api});
+  LoginPage({required this.api});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
-  final _nameController = TextEditingController();
+class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _confirmTextController = TextEditingController();
 
   bool _loading = false;
   String _message = "";
 
-  void _register() async {
-  String name = _nameController.text.trim();
-  String email = _emailController.text.trim();
-  String password = _passwordController.text;
-  String confirmPassword = _confirmTextController.text;
+  void _login() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text;
 
-  
-  if (name.length < 3) {
+    if (email.isEmpty || password.isEmpty) {
+      setState(() {
+        _message = "Please enter email and password";
+      });
+      return;
+    }
+
     setState(() {
-      _message = "Name must be at least 3 characters";
+      _loading = true;
+      _message = "";
     });
-    return;
-  }
 
-  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+    bool success = await widget.api.loginUser(email: email, password: password);
+
     setState(() {
-      _message = "Please enter a valid email";
+      _loading = false;
     });
-    return;
+
+    if (success) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Login successful!")));
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => HomePage(api: widget.api)),
+      );
+    } else {
+      setState(() {
+        _message = "Email or password is incorrect";
+      });
+    }
   }
-
-  if (password.length < 6) {
-    setState(() {
-      _message = "Password must be at least 6 characters";
-    });
-    return;
-  }
-
-  if (password != confirmPassword) {
-    setState(() {
-      _message = "Passwords do not match";
-    });
-    return;
-  }
-
-  setState(() {
-    _loading = true;
-    _message = "";
-  });
-
-  bool success = await widget.api.registerUser(
-    name: name,
-    email: email,
-    password: password,
-    confirmPassword: confirmPassword,
-  );
-
-  setState(() {
-    _loading = false;
-  });
-
-  if (success) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Registered successfully!")),
-    );
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => LoginPage(api: widget.api),
-      ),
-    );
-  } else {
-    setState(() {
-      _message = "Registration failed!";
-    });
-  }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -110,14 +62,12 @@ class _RegisterPageState extends State<RegisterPage> {
       body: SafeArea(
         child: Column(
           children: [
-            
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -128,7 +78,10 @@ class _RegisterPageState extends State<RegisterPage> {
                       );
                     },
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 15,
+                        vertical: 10,
+                      ),
                       decoration: BoxDecoration(
                         color: Color.fromARGB(255, 3, 32, 61),
                         borderRadius: BorderRadius.circular(50),
@@ -144,17 +97,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
 
-                  
-                  Image.asset(
-                    'Image/Logo.png',
-                    width: 90,
-                    height: 90,
-                  ),
+                  Image.asset('Image/Logo.png', width: 90, height: 90),
 
-                  
                   Row(
                     children: [
-                      
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -165,7 +111,10 @@ class _RegisterPageState extends State<RegisterPage> {
                           );
                         },
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 10,
+                          ),
                           decoration: BoxDecoration(
                             color: Color.fromARGB(255, 69, 117, 157),
                             borderRadius: BorderRadius.circular(50),
@@ -183,7 +132,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
                       SizedBox(width: 10),
 
-          
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -194,7 +142,10 @@ class _RegisterPageState extends State<RegisterPage> {
                           );
                         },
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 10,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(50),
@@ -219,7 +170,8 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
 
-            
+            SizedBox(height: 30),
+
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
@@ -234,26 +186,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
                     Image.asset(
                       'Image/Container.png',
-                      width: 3000,
+                      width: double.infinity,
                       height: 120,
                       fit: BoxFit.cover,
                     ),
                     SizedBox(height: 20),
 
-                    
-                    TextField(
-                      controller: _nameController,
-                      decoration: InputDecoration(
-                        labelText: "Name",
-                        prefixIcon: Icon(Icons.person),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-
-                    
                     TextField(
                       controller: _emailController,
                       decoration: InputDecoration(
@@ -264,9 +202,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 15),
 
-                    
                     TextField(
                       controller: _passwordController,
                       obscureText: true,
@@ -278,41 +215,26 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
 
-                    
-                    TextField(
-                      controller: _confirmTextController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: "Confirm Password",
-                        prefixIcon: Icon(Icons.lock_outline),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                    ),
+                    SizedBox(height: 25),
 
-                    SizedBox(height: 20),
-
-                    
                     GestureDetector(
-                      onTap: _register,
+                      onTap: _loading ? null : _login,
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 15),
+                        width: double.infinity,
                         decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 139, 195, 240),
+                          color: Color.fromARGB(255, 117, 169, 220),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Center(
                           child: _loading
                               ? CircularProgressIndicator(color: Colors.white)
                               : Text(
-                                  "Register",
+                                  "Login",
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 18,
                                     fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 1, 13, 33),
                                   ),
                                 ),
                         ),
@@ -320,40 +242,18 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
 
                     SizedBox(height: 20),
-                   Text(
+                    Text(
                       _message,
                       style: TextStyle(
-                        color: Colors.red, 
+                        color: Colors.red, // make it red
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-
                   ],
                 ),
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  final ApiService api;
-  HomePage({required this.api});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("الرئيسية"),
-        backgroundColor: Color.fromARGB(255, 242, 247, 252),
-      ),
-      body: Center(
-        child: Text(
-          "Welcome to the Home Page!",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
       ),
     );
