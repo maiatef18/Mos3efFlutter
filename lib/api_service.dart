@@ -61,4 +61,31 @@ class ApiService {
       return false;
     }
   }
+
+  // ================= Search Services =================
+  Future<List<dynamic>> searchServices({
+    String? keyword,
+    String? category,
+  }) async {
+    Map<String, String> queryParams = {};
+
+    if (keyword != null && keyword.isNotEmpty) {
+      queryParams['keyword'] = keyword.trim();
+    }
+    if (category != null && category.isNotEmpty) {
+      queryParams['category'] = category;
+    }
+
+    final uri = Uri.parse('$baseUrl/Services/search').replace(queryParameters: queryParams);
+    print("Search URL: $uri"); // Debug: check the full URL
+
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      print('Search Error: ${response.statusCode} - ${response.body}');
+      throw Exception('Failed to fetch services');
+    }
+  }
 }

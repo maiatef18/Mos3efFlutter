@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:hello_flutter/service_details.dart';
 import 'api_service.dart';
-
-void main() => runApp(MyApp());
+import 'search_page.dart';
+import 'Register_page.dart';
+import 'service_details.dart';
+void main() {
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   final ApiService api = ApiService();
-
-  MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // home: RegisterPage(api: api),
-      home: ServiceDetailsPage(id: 2),
+      home: Directionality(
+        textDirection: TextDirection.rtl, 
+       child:
+       // ServicesPage(api: api),
+        RegisterPage(api:api),
+       // ServiceDetailsPage(id: 2)
+      ),
     );
   }
 }
