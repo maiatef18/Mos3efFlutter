@@ -1,30 +1,55 @@
 import 'package:flutter/material.dart';
 import 'api_service.dart';
-import 'register_page.dart';
+import 'login_page.dart';
 
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   final ApiService api;
 
-  const LoginPage({super.key, required this.api});
+  const RegisterPage({super.key, required this.api});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmTextController = TextEditingController();
 
   bool _loading = false;
   String _message = "";
 
-  void _login() async {
+  void _register() async {
+    String name = _nameController.text.trim();
     String email = _emailController.text.trim();
     String password = _passwordController.text;
+    String confirmPassword = _confirmTextController.text;
 
-    if (email.isEmpty || password.isEmpty) {
+    if (name.length < 3) {
       setState(() {
-        _message = "Please enter email and password";
+        _message = "Name must be at least 3 characters";
+      });
+      return;
+    }
+
+    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+      setState(() {
+        _message = "Please enter a valid email";
+      });
+      return;
+    }
+
+    if (password.length < 6) {
+      setState(() {
+        _message = "Password must be at least 6 characters";
+      });
+      return;
+    }
+
+    if (password != confirmPassword) {
+      setState(() {
+        _message = "Passwords do not match";
       });
       return;
     }
@@ -34,7 +59,12 @@ class _LoginPageState extends State<LoginPage> {
       _message = "";
     });
 
-    bool success = await widget.api.loginUser(email: email, password: password);
+    bool success = await widget.api.registerUser(
+      name: name,
+      email: email,
+      password: password,
+      confirmPassword: confirmPassword,
+    );
 
     setState(() {
       _loading = false;
@@ -43,15 +73,15 @@ class _LoginPageState extends State<LoginPage> {
     if (success) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text("Login successful!")));
+      ).showSnackBar(SnackBar(content: Text("Registered successfully!")));
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => HomePage(api: widget.api)),
+        MaterialPageRoute(builder: (_) => LoginPage(api: widget.api)),
       );
     } else {
       setState(() {
-        _message = "Email or password is incorrect";
+        _message = "Registration failed!";
       });
     }
   }
@@ -170,8 +200,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
 
-            SizedBox(height: 30),
-
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
@@ -186,11 +214,23 @@ class _LoginPageState extends State<LoginPage> {
 
                     Image.asset(
                       'Image/Container.png',
-                      width: double.infinity,
+                      width: 3000,
                       height: 120,
                       fit: BoxFit.cover,
                     ),
                     SizedBox(height: 20),
+
+                    TextField(
+                      controller: _nameController,
+                      decoration: InputDecoration(
+                        labelText: "Name",
+                        prefixIcon: Icon(Icons.person),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
 
                     TextField(
                       controller: _emailController,
@@ -202,7 +242,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 15),
+                    SizedBox(height: 10),
 
                     TextField(
                       controller: _passwordController,
@@ -215,26 +255,38 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
+                    SizedBox(height: 10),
 
-                    SizedBox(height: 25),
+                    TextField(
+                      controller: _confirmTextController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: "Confirm Password",
+                        prefixIcon: Icon(Icons.lock_outline),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                    ),
 
+                    SizedBox(height: 20),
                     GestureDetector(
-                      onTap: _loading ? null : _login,
+                      onTap: _register,
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 15),
-                        width: double.infinity,
                         decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 117, 169, 220),
+                          color: Color.fromARGB(255, 139, 195, 240),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Center(
                           child: _loading
                               ? CircularProgressIndicator(color: Colors.white)
                               : Text(
-                                  "Login",
+                                  "Register",
                                   style: TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 1, 13, 33),
                                   ),
                                 ),
                         ),
@@ -245,7 +297,7 @@ class _LoginPageState extends State<LoginPage> {
                     Text(
                       _message,
                       style: TextStyle(
-                        color: Colors.red, // make it red
+                        color: Colors.red,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -254,6 +306,27 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  final ApiService api;
+  const HomePage({super.key, required this.api});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("الرئيسية"),
+        backgroundColor: Color.fromARGB(255, 242, 247, 252),
+      ),
+      body: Center(
+        child: Text(
+          "Welcome to the Home Page!",
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
       ),
     );
