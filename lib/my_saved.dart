@@ -30,35 +30,34 @@ class _MySavedServicesPageState extends State<MySavedServicesPage> {
   }
 
   Future<void> removeSaved(int serviceId) async {
-  final success = await api.removeFromSaved(serviceId);
-  if (success) {
-    setState(() {
-      services.removeWhere((s) => s["serviceId"] == serviceId);
-    });
+    final success = await api.removeFromSaved(serviceId);
+    if (success) {
+      setState(() {
+        services.removeWhere((s) => s["serviceId"] == serviceId);
+      });
 
-    // Use ScaffoldMessenger from the nearest Scaffold
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("The service has been removed from saved services."),
-        duration: Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.all(12),
-        backgroundColor: Colors.blueAccent,
-      ),
-    );
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Failed to remove the service."),
-        duration: Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.all(12),
-        backgroundColor: Colors.redAccent,
-      ),
-    );
+      // Use ScaffoldMessenger from the nearest Scaffold
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("The service has been removed from saved services."),
+          duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.all(12),
+          backgroundColor: Colors.blueAccent,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Failed to remove the service."),
+          duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.all(12),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -281,5 +280,4 @@ class _MySavedServicesPageState extends State<MySavedServicesPage> {
             ),
     );
   }
-  
 }

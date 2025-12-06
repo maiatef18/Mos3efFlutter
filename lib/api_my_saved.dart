@@ -31,7 +31,7 @@ class SavedServicesApi {
 
   Future<bool> removeFromSaved(int serviceId) async {
     final url = Uri.parse("$baseUrl/api/Patients/my-saved-services/$serviceId");
- final token = await getToken();
+    final token = await getToken();
     if (token == null) {
       throw Exception("User not logged in – token is null");
     }
