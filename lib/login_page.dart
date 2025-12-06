@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'api_service.dart';
 import 'register_page.dart';
+import 'my_saved.dart';
 
 class LoginPage extends StatefulWidget {
   final ApiService api;
@@ -47,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => HomePage(api: widget.api)),
+        MaterialPageRoute(builder: (_) => MySavedServicesPage(),),
       );
     } else {
       setState(() {
