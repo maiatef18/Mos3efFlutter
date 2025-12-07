@@ -3,7 +3,10 @@ import 'profile_ui.dart';
 import 'my_saved.dart';
 import 'search_page.dart';
 import 'api_service.dart';
+import 'Register_page.dart';
+
 final ApiService api = ApiService();
+
 class HomePagem extends StatelessWidget {
   const HomePagem({super.key});
 
@@ -26,7 +29,7 @@ class HomePagem extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) =>  MySavedServicesPage()),
+                MaterialPageRoute(builder: (_) => MySavedServicesPage()),
               );
             },
           ),
@@ -35,7 +38,16 @@ class HomePagem extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) =>  PatientProfileScreen()),
+                MaterialPageRoute(builder: (_) => PatientProfileScreen()),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.blue),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => RegisterPage(api: api)),
               );
             },
           ),
@@ -52,8 +64,8 @@ class HomePagem extends StatelessWidget {
 
           Column(
             children: [
-               Padding(
-                padding: const EdgeInsets.only(bottom: 80 ,top: 20),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 80, top: 20),
                 child: Image.asset(
                   "Image/landframe.png",
                   height: 250,
@@ -76,7 +88,7 @@ class HomePagem extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) =>   ServicesPage(api: api)),
+                      MaterialPageRoute(builder: (_) => ServicesPage(api: api)),
                     );
                   },
                   child: Row(
