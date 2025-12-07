@@ -217,16 +217,15 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               IconButton(
-                icon: const Icon(Icons.home, color: Colors.blue),
+                icon: const Icon(Icons.person_outline, color: Colors.blue),
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (_) => HomePagem(),
-                    ), // your home page
+                    MaterialPageRoute(builder: (_) => PatientProfileScreen()),
                   );
                 },
               ),
+
               IconButton(
                 icon: const Icon(Icons.favorite_border, color: Colors.blue),
                 onPressed: () {
@@ -237,11 +236,13 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                 },
               ),
               IconButton(
-                icon: const Icon(Icons.person_outline, color: Colors.blue),
+                icon: const Icon(Icons.home, color: Colors.blue),
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => PatientProfileScreen()),
+                    MaterialPageRoute(
+                      builder: (_) => HomePagem(),
+                    ), // your home page
                   );
                 },
               ),
