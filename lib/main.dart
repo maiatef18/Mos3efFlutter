@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'api_service.dart';
-import 'search_page.dart';
+//import 'search_page.dart';
 import 'Register_page.dart';
-import 'service_details.dart';
+//import 'service_details.dart';
 void main() {
   runApp(MyApp());
 }

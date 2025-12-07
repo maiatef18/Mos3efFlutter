@@ -61,6 +61,7 @@ class ApiService {
         await prefs.setString('auth_token', token);
         await prefs.setString('userId', data['userId']);
         await prefs.setString('email', data['email']);
+        await prefs.setString('password', password);
 
         print("Login successful, token saved: $token");
       }
