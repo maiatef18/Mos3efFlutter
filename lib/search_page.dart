@@ -4,14 +4,14 @@ import 'api_service.dart';
 class ServicesPage extends StatefulWidget {
   final ApiService api;
 
-  ServicesPage({required this.api, Key? key}) : super(key: key);
+  const ServicesPage({required this.api, super.key});
 
   @override
   _ServicesPageState createState() => _ServicesPageState();
 }
 
 class _ServicesPageState extends State<ServicesPage> {
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   List<dynamic> _services = [];
   bool _loading = false;
   String? _selectedCategory;
@@ -74,7 +74,9 @@ class _ServicesPageState extends State<ServicesPage> {
       onPressed: () {
         fetchServices(
           category: categoryValue,
-          keyword: _searchController.text.isEmpty ? null : _searchController.text,
+          keyword: _searchController.text.isEmpty
+              ? null
+              : _searchController.text,
         );
       },
       child: Text(label),
@@ -134,13 +136,13 @@ class _ServicesPageState extends State<ServicesPage> {
               child: _loading
                   ? Center(child: CircularProgressIndicator())
                   : _services.isEmpty
-                      ? Center(child: Text('لا توجد خدمات'))
-                      : ListView.builder(
-                          itemCount: _services.length,
-                          itemBuilder: (context, index) {
-                            return buildServiceItem(_services[index]);
-                          },
-                        ),
+                  ? Center(child: Text('لا توجد خدمات'))
+                  : ListView.builder(
+                      itemCount: _services.length,
+                      itemBuilder: (context, index) {
+                        return buildServiceItem(_services[index]);
+                      },
+                    ),
             ),
           ],
         ),

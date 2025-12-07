@@ -45,4 +45,27 @@ class SavedServicesApi {
 
     return response.statusCode == 200 || response.statusCode == 204;
   }
+
+  Future<bool> addToSaved(int serviceId) async {
+    final url = Uri.parse("$baseUrl/api/Patients/my-saved-services/$serviceId");
+    final token = await getToken();
+    if (token == null) {
+      throw Exception("User not logged in – token is null");
+    }
+
+    final response = await http.post(
+      url,
+      headers: {
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json",
+      },
+    );
+
+    print("Status: ${response.statusCode}");
+    print("Body: ${response.body}");
+
+    return response.statusCode == 200 ||
+        response.statusCode == 201 ||
+        response.statusCode == 204;
+  }
 }

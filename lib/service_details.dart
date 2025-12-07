@@ -1,5 +1,6 @@
-import 'api_Alaa.dart';
 import 'package:flutter/material.dart';
+import 'api_my_saved.dart';
+import 'api_Alaa.dart';
 
 class ServiceDetailsPage extends StatefulWidget {
   final int id;
@@ -12,6 +13,8 @@ class ServiceDetailsPage extends StatefulWidget {
 class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
   Map<String, dynamic>? service;
   bool isFavorite = false;
+  bool isLoadingFavorite = false;
+  final SavedServicesApi api = SavedServicesApi();
 
   @override
   void initState() {
@@ -21,7 +24,54 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
 
   void loadData() async {
     service = await fetchServiceById(widget.id);
+
+    List saved = await api.getSavedServices();
+    if (saved.any((s) => s['serviceId'] == widget.id)) {
+      isFavorite = true;
+    }
+
     setState(() {});
+  }
+
+  Future<void> toggleFavorite() async {
+    if (service == null) return;
+    setState(() {
+      isLoadingFavorite = true;
+    });
+
+    if (!isFavorite) {
+      bool success = await api.addToSaved(service!['serviceId']);
+      if (success) {
+        setState(() {
+          isFavorite = true;
+        });
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('تمت الإضافة للمفضلة')));
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('فشل في إضافة الخدمة')));
+      }
+    } else {
+      bool success = await api.removeFromSaved(service!['serviceId']);
+      if (success) {
+        setState(() {
+          isFavorite = false;
+        });
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('تم الحذف من المفضلة')));
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('فشل في حذف الخدمة')));
+      }
+    }
+
+    setState(() {
+      isLoadingFavorite = false;
+    });
   }
 
   @override
@@ -62,20 +112,22 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                         Positioned(
                           top: 16,
                           right: 16,
-                          child: IconButton(
-                            icon: Icon(
-                              isFavorite
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
-                              color: isFavorite ? Colors.red : Colors.white,
-                              size: 30,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                isFavorite = !isFavorite;
-                              });
-                            },
-                          ),
+                          child: isLoadingFavorite
+                              ? const CircularProgressIndicator(
+                                  color: Colors.red,
+                                )
+                              : IconButton(
+                                  icon: Icon(
+                                    isFavorite
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
+                                    color: isFavorite
+                                        ? Colors.red
+                                        : Colors.white,
+                                    size: 30,
+                                  ),
+                                  onPressed: toggleFavorite,
+                                ),
                         ),
                         Positioned(
                           bottom: 16,
@@ -102,7 +154,6 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                       ],
                     ),
                     const SizedBox(height: 20),
-
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
