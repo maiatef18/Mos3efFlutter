@@ -76,11 +76,14 @@ class _MySavedServicesPageState extends State<MySavedServicesPage> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : Container(
-              color: const Color.fromARGB(248, 237, 244, 247),
+              color: Colors.grey[100],
               child: services.isEmpty
                   ? const Center(child: Text("No saved services 👀"))
                   : ListView.builder(
-                                    padding: const EdgeInsets.only(top: 20, bottom: 80), // ← top and bottom spacing
+                      padding: const EdgeInsets.only(
+                        top: 20,
+                        bottom: 80,
+                      ), // ← top and bottom spacing
 
                       itemCount: services.length,
                       itemBuilder: (context, index) {

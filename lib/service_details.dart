@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'api_my_saved.dart';
 import 'api_Alaa.dart';
+import 'home_page.dart';
+import 'my_saved.dart';
+import 'profile_ui.dart';
 
 class ServiceDetailsPage extends StatefulWidget {
   final int id;
@@ -81,8 +84,11 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
       child: Scaffold(
         backgroundColor: Colors.grey[100],
         appBar: AppBar(
-          title: const Text("تفاصيل الخدمة"),
-          backgroundColor: const Color(0xFF89CFF0),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          automaticallyImplyLeading: false,
+
+          title: Image.asset("Image/Logo.png", height: 45),
         ),
         body: service == null
             ? const Center(child: CircularProgressIndicator())
@@ -204,6 +210,44 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                   ],
                 ),
               ),
+        bottomNavigationBar: Container(
+          color: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.home, color: Colors.blue),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => HomePagem(),
+                    ), // your home page
+                  );
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.favorite_border, color: Colors.blue),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => MySavedServicesPage()),
+                  );
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.person_outline, color: Colors.blue),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => PatientProfileScreen()),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

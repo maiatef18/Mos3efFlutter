@@ -21,8 +21,8 @@ class MyApp extends StatelessWidget {
         textDirection: TextDirection.rtl,
         child:
             // ServicesPage(api: api),
-            // RegisterPage(api: api),
-            ServiceDetailsPage(id: 2),
+             RegisterPage(api: api),
+          //  ServiceDetailsPage(id: 2),
       ),
     );
   }

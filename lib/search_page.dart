@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
 import 'api_service.dart';
+import 'my_saved.dart';
+import 'api_my_saved.dart';
+import 'profile_ui.dart';
+import 'Home_page.dart';
+import 'service_details.dart';
 
 class ServicesPage extends StatefulWidget {
   final ApiService api;
 
-  const ServicesPage({required this.api, super.key});
+  ServicesPage({required this.api, Key? key}) : super(key: key);
 
   @override
   _ServicesPageState createState() => _ServicesPageState();
 }
 
 class _ServicesPageState extends State<ServicesPage> {
-  final TextEditingController _searchController = TextEditingController();
+  TextEditingController _searchController = TextEditingController();
   List<dynamic> _services = [];
   bool _loading = false;
   String? _selectedCategory;
 
-  // Fetch services from API
+  Set<int> _favoriteIds = {};
+
   Future<void> fetchServices({String? keyword, String? category}) async {
     setState(() {
       _loading = true;
@@ -44,31 +50,13 @@ class _ServicesPageState extends State<ServicesPage> {
     }
   }
 
-  Widget buildServiceItem(dynamic service) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 5),
-      child: ListTile(
-        title: Text(service['name'] ?? ''),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (service['averageRating'] != null)
-              Text('التقييم: ${service['averageRating']}'),
-            if (service['distanceKm'] != null)
-              Text('المسافة: ${service['distanceKm'].toStringAsFixed(2)} كم'),
-            if (service['availability'] != null)
-              Text('التوافر: ${service['availability']}'),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget buildCategoryButton(String label, String categoryValue) {
     final isSelected = _selectedCategory == categoryValue;
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: isSelected ? Colors.blueAccent : Colors.grey[300],
+        backgroundColor: isSelected
+            ? Colors.blue
+            : const Color.fromARGB(255, 255, 255, 255),
         foregroundColor: isSelected ? Colors.white : Colors.black,
       ),
       onPressed: () {
@@ -87,10 +75,14 @@ class _ServicesPageState extends State<ServicesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('بحث عن الخدمات'),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        title: Image.asset("Image/Logo.png", height: 45),
       ),
-      body: Padding(
+      body: Container(
+        color: const Color.fromARGB(248, 255, 255, 255),
+
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
@@ -122,14 +114,19 @@ class _ServicesPageState extends State<ServicesPage> {
               ],
             ),
             SizedBox(height: 12),
-            Wrap(
-              spacing: 8,
-              children: [
-                buildCategoryButton('طواريء', 'EmergencyRoom'),
-                buildCategoryButton('عناية مركزة', 'ICU'),
-                buildCategoryButton('حضانة اطفال', 'NICU'),
-                buildCategoryButton('بنك الدم', 'BloodBank'),
-              ],
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  buildCategoryButton('طواريء', 'EmergencyRoom'),
+                  SizedBox(width: 8),
+                  buildCategoryButton('عناية مركزة', 'ICU'),
+                  SizedBox(width: 8),
+                  buildCategoryButton('حضانة اطفال', 'NICU'),
+                  SizedBox(width: 8),
+                  buildCategoryButton('بنك الدم', 'BloodBank'),
+                ],
+              ),
             ),
             SizedBox(height: 12),
             Expanded(
@@ -140,9 +137,175 @@ class _ServicesPageState extends State<ServicesPage> {
                   : ListView.builder(
                       itemCount: _services.length,
                       itemBuilder: (context, index) {
-                        return buildServiceItem(_services[index]);
+                        final service = _services[index];
+                        return ServiceCard(
+                          data: service,
+                          isFavorite: _favoriteIds.contains(
+                            service['id'] ?? index,
+                          ),
+                          onFavorite: () {
+                            setState(() {
+                              final id = service['id'] ?? index;
+                              if (_favoriteIds.contains(id)) {
+                                _favoriteIds.remove(id);
+                              } else {
+                                _favoriteIds.add(id);
+                              }
+                            });
+                          },
+                        );
                       },
                     ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        color: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.home, color: Colors.blue),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => HomePagem()),
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.favorite_border, color: Colors.blue),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => MySavedServicesPage()),
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.person_outline, color: Colors.blue),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => PatientProfileScreen()),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ------------------- ServiceCard -------------------
+
+class ServiceCard extends StatelessWidget {
+  final Map<String, dynamic> data;
+  final VoidCallback? onFavorite;
+  final bool isFavorite;
+
+  const ServiceCard({
+    super.key,
+    required this.data,
+    this.onFavorite,
+    this.isFavorite = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(255, 255, 255, 255),
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 6,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              data['hospitalName'] ?? "",
+              style: const TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w700,
+                color: Colors.blue,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              data['name'] ?? "",
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Text(
+                  "${data['price']} جنيه",
+                  style: const TextStyle(fontSize: 14),
+                ),
+                const SizedBox(width: 15),
+                const Icon(Icons.access_time, size: 18, color: Colors.blue),
+                Text(
+                  data['working_Hours'] ?? "",
+                  style: const TextStyle(fontSize: 14),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(Icons.info_outline, size: 18, color: Colors.blue),
+                const SizedBox(width: 5),
+                Expanded(
+                  child: Text(
+                    data['description'] ?? "",
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ServiceDetailsPage(id: data['serviceId']),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                child: const Text(
+                  "عرض التفاصيل",
+                  style: TextStyle(fontSize: 15, color: Colors.white),
+                ),
+              ),
             ),
           ],
         ),
