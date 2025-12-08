@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'api_service.dart';
 import 'login_page.dart';
-
+import 'home_page.dart';
 class RegisterPage extends StatefulWidget {
   final ApiService api;
 
@@ -86,9 +86,11 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+@override
+Widget build(BuildContext context) {
+  return Directionality(
+    textDirection: TextDirection.rtl,
+    child: Scaffold(
       body: SafeArea(
         child: Column(
           children: [
@@ -96,33 +98,25 @@ class _RegisterPageState extends State<RegisterPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (_) => HomePage(api: widget.api),
-                        ),
+                       MaterialPageRoute(builder: (_) => HomePagem()),
+
                       );
                     },
                     child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 15,
-                        vertical: 10,
-                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                       decoration: BoxDecoration(
                         color: Color.fromARGB(255, 3, 32, 61),
                         borderRadius: BorderRadius.circular(50),
                       ),
                       child: Text(
                         "الرئيسية",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -132,30 +126,16 @@ class _RegisterPageState extends State<RegisterPage> {
                   Row(
                     children: [
                       GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => RegisterPage(api: widget.api),
-                            ),
-                          );
-                        },
+                        onTap: () {},
                         child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 10,
-                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                           decoration: BoxDecoration(
                             color: Color.fromARGB(255, 69, 117, 157),
                             borderRadius: BorderRadius.circular(50),
                           ),
                           child: Text(
                             "تسجيل",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
@@ -166,16 +146,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                              builder: (_) => LoginPage(api: widget.api),
-                            ),
+                            MaterialPageRoute(builder: (_) => LoginPage(api: widget.api)),
                           );
                         },
                         child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 10,
-                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(50),
@@ -187,10 +162,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           child: Text(
                             "دخول",
                             style: TextStyle(
-                              color: Color.fromARGB(255, 1, 13, 33),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
+                                color: Color.fromARGB(255, 1, 13, 33),
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
@@ -205,29 +178,21 @@ class _RegisterPageState extends State<RegisterPage> {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    Image.asset(
-                      'Image/Doctors_bro_1.png',
-                      width: 250,
-                      height: 250,
-                    ),
+                    Image.asset('Image/Doctors_bro_1.png', width: 250, height: 250),
                     SizedBox(height: 20),
-
                     Image.asset(
                       'Image/Container.png',
-                      width: 3000,
+                      width: double.infinity,
                       height: 120,
                       fit: BoxFit.cover,
                     ),
                     SizedBox(height: 20),
-
                     TextField(
                       controller: _nameController,
                       decoration: InputDecoration(
-                        labelText: "Name",
+                        labelText: "الاسم",
                         prefixIcon: Icon(Icons.person),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
                       ),
                     ),
                     SizedBox(height: 10),
@@ -235,11 +200,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     TextField(
                       controller: _emailController,
                       decoration: InputDecoration(
-                        labelText: "Email",
+                        labelText: "البريد الإلكتروني",
                         prefixIcon: Icon(Icons.email),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
                       ),
                     ),
                     SizedBox(height: 10),
@@ -248,11 +211,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       controller: _passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
-                        labelText: "Password",
+                        labelText: "كلمة المرور",
                         prefixIcon: Icon(Icons.lock),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
                       ),
                     ),
                     SizedBox(height: 10),
@@ -261,11 +222,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       controller: _confirmTextController,
                       obscureText: true,
                       decoration: InputDecoration(
-                        labelText: "Confirm Password",
+                        labelText: "تأكيد كلمة المرور",
                         prefixIcon: Icon(Icons.lock_outline),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
                       ),
                     ),
 
@@ -282,7 +241,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           child: _loading
                               ? CircularProgressIndicator(color: Colors.white)
                               : Text(
-                                  "Register",
+                                  "تسجيل",
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -296,10 +255,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     SizedBox(height: 20),
                     Text(
                       _message,
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -308,27 +264,8 @@ class _RegisterPageState extends State<RegisterPage> {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
-class HomePage extends StatelessWidget {
-  final ApiService api;
-  const HomePage({super.key, required this.api});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("الرئيسية"),
-        backgroundColor: Color.fromARGB(255, 242, 247, 252),
-      ),
-      body: Center(
-        child: Text(
-          "Welcome to the Home Page!",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-      ),
-    );
-  }
-}

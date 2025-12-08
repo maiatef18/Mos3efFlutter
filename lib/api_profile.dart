@@ -1,27 +1,52 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'api_service.dart'; // يفترض فيه getToken()
+import 'package:http_parser/http_parser.dart';
+import 'api_service.dart';
+
+class PatientProfile {
+  final String name;
+  final String email;
+  final String phoneNumber;
+  final String address;
+
+  PatientProfile({
+    required this.name,
+    required this.email,
+    required this.phoneNumber,
+    required this.address,
+  });
+
+  factory PatientProfile.fromJson(Map<String, dynamic> json) {
+    return PatientProfile(
+      name: json["name"] ?? "",
+      email: json["email"] ?? "",
+      phoneNumber: json["phoneNumber"] ?? "",
+      address: json["address"] ?? "",
+    );
+  }
+}
 
 class PatientProfileApiService {
   final String baseUrl = "http://10.0.2.2:5000/api/Patients";
 
   // GET PROFILE
-  Future<Map<String, dynamic>?> getMyProfile() async {
+  Future<PatientProfile?> getMyProfile() async {
     try {
       final token = await getToken();
-      if (token == null) throw Exception("token null");
+      if (token == null) throw Exception("No token");
 
       final url = Uri.parse("$baseUrl/my-profile");
       final response = await http.get(
         url,
         headers: {
           "Authorization": "Bearer $token",
-          "Content-Type": "application/json",
         },
       );
 
       if (response.statusCode == 200) {
-        return jsonDecode(response.body) as Map<String, dynamic>;
+        final data = jsonDecode(response.body);
+        return PatientProfile.fromJson(data);
       } else {
         print("GET PROFILE ERROR: ${response.statusCode} ${response.body}");
         return null;
@@ -32,54 +57,51 @@ class PatientProfileApiService {
     }
   }
 
-  // UPDATE PROFILE -> returns { success: bool, message: String }
+  // UPDATE PROFILE (Multipart/form-data)
   Future<Map<String, dynamic>> updateProfile({
-  required String name,
-  required String email,
-  required String phoneNumber,
-  required String address,
-  String profilePicture = "",
-}) async {
-  try {
-    final token = await getToken();
-    if (token == null) {
-      return {"success": false, "message": "User not logged in"};
+    required String name,
+    required String email,
+    required String phoneNumber,
+    required String address,
+    File? profilePicture,
+  }) async {
+    try {
+      final token = await getToken();
+      if (token == null) {
+        return {"success": false, "message": "User not logged in"};
+      }
+
+      final url = Uri.parse("$baseUrl/my-profile");
+      var request = http.MultipartRequest("PUT", url);
+      request.headers["Authorization"] = "Bearer $token";
+
+      request.fields["Name"] = name;
+      request.fields["Email"] = email;
+      request.fields["PhoneNumber"] = phoneNumber;
+      request.fields["Address"] = address;
+
+      if (profilePicture != null) {
+        request.files.add(await http.MultipartFile.fromPath(
+          "ProfilePicture",
+          profilePicture.path,
+          contentType: MediaType("image", "jpeg"),
+        ));
+      }
+
+      var response = await request.send();
+      var responseBody = await response.stream.bytesToString();
+
+      if (response.statusCode == 204) {
+        return {"success": true, "message": "Profile updated"};
+      } else {
+        return {"success": false, "message": responseBody};
+      }
+    } catch (e) {
+      return {"success": false, "message": e.toString()};
     }
+  }
 
-    final url = Uri.parse("$baseUrl/update");
-
-    final Map<String, dynamic> body = {
-      "Name": name,
-      "Email": email,
-      "Address": address,
-      "PhoneNumber": phoneNumber,
-      "ProfilePicture": profilePicture, // لو مش هتبعت صورة سيبيه فاضية
-    };
-
-    final response = await http.put(
-      url,
-      headers: {
-        "Authorization": "Bearer $token",
-        "Content-Type": "application/json",
-      },
-      body: jsonEncode(body),
-    );
-
-    if (response.statusCode == 200) {
-      return {"success": true, "message": "Profile updated successfully"};
-    } else {
-      return {
-        "success": false,
-        "message": response.body.isNotEmpty
-            ? response.body
-            : "Error ${response.statusCode}"
-      };
-    }
-  } catch (e) {
-    return {"success": false, "message": e.toString()};
-}
-}
-  // CHANGE PASSWORD -> returns { success: bool, message: String }
+  // CHANGE PASSWORD
   Future<Map<String, dynamic>> changePassword({
     required String currentPassword,
     required String newPassword,
@@ -89,15 +111,15 @@ class PatientProfileApiService {
       final token = await getToken();
       if (token == null) return {"success": false, "message": "User not logged in."};
 
-      final url = Uri.parse("$baseUrl/change-password");
+      final url = Uri.parse("http://10.0.2.2:5000/api/Account/change-password");
 
-      final Map<String, dynamic> body = {
-        "currentPassword": currentPassword,
-        "newPassword": newPassword,
-        "confirmNewPassword": confirmNewPassword,
+      final body = {
+        "CurrentPassword": currentPassword,
+        "NewPassword": newPassword,
+        "ConfirmNewPassword": confirmNewPassword,
       };
 
-      final response = await http.put(
+      final response = await http.post(
         url,
         headers: {
           "Authorization": "Bearer $token",
@@ -109,12 +131,13 @@ class PatientProfileApiService {
       if (response.statusCode == 200) {
         return {"success": true, "message": "Password changed"};
       } else {
-        String msg = response.body.isNotEmpty ? response.body : "Server error ${response.statusCode}";
+        String msg = response.body.isNotEmpty
+            ? response.body
+            : "Server error ${response.statusCode}";
         return {"success": false, "message": msg};
       }
     } catch (e) {
-      print("CHANGE PASSWORD EXCEPTION: $e");
       return {"success": false, "message": e.toString()};
-}
-}
+    }
+  }
 }
