@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'api_service.dart';
+import 'api/api_service.dart';
 //import 'search_page.dart';
-import 'Register_page.dart';
+import '/pages/Register_page.dart';
 
 void main() {
   runApp(MyApp());

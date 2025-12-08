@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'profile_ui.dart';
 import 'my_saved.dart';
 import 'search_page.dart';
-import 'api_service.dart';
+import '/api/api_service.dart';
 import 'Register_page.dart';
 
 final ApiService api = ApiService();
@@ -125,30 +125,5 @@ class HomePagem extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-// ----------------- DUMMY PAGES (Replace with your real pages) --------------
-class SarahPage extends StatelessWidget {
-  const SarahPage({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: Text("Sarah Page")));
-  }
-}
-
-class FavPage extends StatelessWidget {
-  const FavPage({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: Text("Favorites Page")));
-  }
-}
-
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: Text("Profile Page")));
   }
 }
