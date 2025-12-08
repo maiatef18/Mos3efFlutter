@@ -107,9 +107,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
-          automaticallyImplyLeading: false,
           centerTitle: false,
-
           title: Align(
             alignment: Alignment.centerLeft,
             child: Image.asset("Image/Logo.png", height: 45),
@@ -195,7 +193,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                                           vertical: 10,
                                         ),
                                         decoration: BoxDecoration(
-                                          color:Colors.blue,
+                                          color: Colors.blue,
                                           borderRadius: BorderRadius.circular(
                                             15,
                                           ),
@@ -230,7 +228,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                                     vertical: 15,
                                   ),
                                   decoration: BoxDecoration(
-                                    color:Colors.blue,
+                                    color: Colors.blue,
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: const Center(

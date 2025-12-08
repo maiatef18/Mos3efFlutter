@@ -18,10 +18,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Directionality(
         textDirection: TextDirection.rtl,
-        child:
-            // ServicesPage(api: api),
-            RegisterPage(api: api),
-        //  ServiceDetailsPage(id: 2),
+        child: RegisterPage(api: api),
       ),
     );
   }

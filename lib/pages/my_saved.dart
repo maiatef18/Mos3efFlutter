@@ -68,8 +68,6 @@ class _MySavedServicesPageState extends State<MySavedServicesPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        automaticallyImplyLeading: false,
-
         title: Image.asset("Image/Logo.png", height: 45),
       ),
 

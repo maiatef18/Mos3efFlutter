@@ -20,7 +20,6 @@ class HomePagem extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         automaticallyImplyLeading: false,
-
         title: Image.asset("Image/Logo.png", height: 45),
 
         actions: [
