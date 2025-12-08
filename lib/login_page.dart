@@ -24,9 +24,7 @@ class _LoginPageState extends State<LoginPage> {
     String password = _passwordController.text;
 
     if (email.isEmpty || password.isEmpty) {
-      setState(() {
-        _message = "يرجى إدخال البريد الإلكتروني وكلمة المرور";
-      });
+      setState(() => _message = "يرجى إدخال البريد الإلكتروني وكلمة المرور");
       return;
     }
 
@@ -37,78 +35,56 @@ class _LoginPageState extends State<LoginPage> {
 
     bool success = await widget.api.loginUser(email: email, password: password);
 
-    setState(() {
-      _loading = false;
-    });
+    setState(() => _loading = false);
 
     if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("تم تسجيل الدخول بنجاح")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("تم تسجيل الدخول بنجاح")));
 
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const HomePagem()),
       );
     } else {
-      setState(() {
-        _message = "البريد الإلكتروني أو كلمة المرور غير صحيحة";
-      });
+      setState(() => _message = "البريد الإلكتروني أو كلمة المرور غير صحيحة");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection: TextDirection.rtl, // 🔥 Arabic RTL
+      textDirection: TextDirection.rtl,
       child: Scaffold(
         body: SafeArea(
           child: Column(
             children: [
-              // ---------------- HEADER ----------------
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => HomePagem()),
-                        );
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 3, 32, 61),
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Text(
-                          "الرئيسية",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    Image.asset('Image/Logo.png', width: 90, height: 90),
-
                     Row(
                       children: [
                         GestureDetector(
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (_) => RegisterPage(api: widget.api)),
+                              MaterialPageRoute(
+                                builder: (_) => RegisterPage(api: widget.api),
+                              ),
                             );
                           },
                           child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 15,
+                              vertical: 10,
+                            ),
                             decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 69, 117, 157),
+                              color: Colors.blue,
                               borderRadius: BorderRadius.circular(50),
                             ),
                             child: Text(
@@ -122,23 +98,22 @@ class _LoginPageState extends State<LoginPage> {
                         ),
 
                         SizedBox(width: 10),
-
                         GestureDetector(
                           onTap: () {},
                           child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 15,
+                              vertical: 10,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(50),
-                              border: Border.all(
-                                color: Color.fromARGB(255, 1, 13, 33),
-                                width: 2,
-                              ),
+                              border: Border.all(color: Colors.blue, width: 2),
                             ),
                             child: Text(
                               "دخول",
                               style: TextStyle(
-                                color: Color.fromARGB(255, 1, 13, 33),
+                                color: Colors.blue,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -146,6 +121,8 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ],
                     ),
+
+                    Image.asset('Image/Logo.png', width: 90, height: 90),
                   ],
                 ),
               ),
@@ -158,7 +135,11 @@ class _LoginPageState extends State<LoginPage> {
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      Image.asset('Image/Doctors_bro_1.png', width: 250, height: 250),
+                      Image.asset(
+                        'Image/Doctors_bro_1.png',
+                        width: 250,
+                        height: 250,
+                      ),
                       SizedBox(height: 20),
 
                       Image.asset(
@@ -175,7 +156,9 @@ class _LoginPageState extends State<LoginPage> {
                         decoration: InputDecoration(
                           labelText: "البريد الإلكتروني",
                           prefixIcon: Icon(Icons.email),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
                         ),
                       ),
 
@@ -187,7 +170,9 @@ class _LoginPageState extends State<LoginPage> {
                         decoration: InputDecoration(
                           labelText: "كلمة المرور",
                           prefixIcon: Icon(Icons.lock),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
                         ),
                       ),
 
@@ -199,7 +184,7 @@ class _LoginPageState extends State<LoginPage> {
                           padding: EdgeInsets.symmetric(vertical: 15),
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 117, 169, 220),
+                            color: Colors.blue,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Center(
@@ -210,6 +195,7 @@ class _LoginPageState extends State<LoginPage> {
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
+                                      color: Colors.white,
                                     ),
                                   ),
                           ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'api_service.dart';
 //import 'search_page.dart';
 import 'Register_page.dart';
-import 'service_details.dart';
 
 void main() {
   runApp(MyApp());
@@ -21,8 +20,8 @@ class MyApp extends StatelessWidget {
         textDirection: TextDirection.rtl,
         child:
             // ServicesPage(api: api),
-             RegisterPage(api: api),
-          //  ServiceDetailsPage(id: 2),
+            RegisterPage(api: api),
+        //  ServiceDetailsPage(id: 2),
       ),
     );
   }

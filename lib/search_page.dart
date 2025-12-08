@@ -9,19 +9,19 @@ import 'service_details.dart';
 class ServicesPage extends StatefulWidget {
   final ApiService api;
 
-  ServicesPage({required this.api, Key? key}) : super(key: key);
+  const ServicesPage({required this.api, super.key});
 
   @override
   _ServicesPageState createState() => _ServicesPageState();
 }
 
 class _ServicesPageState extends State<ServicesPage> {
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   List<dynamic> _services = [];
   bool _loading = false;
   String? _selectedCategory;
 
-  Set<int> _favoriteIds = {};
+  final Set<int> _favoriteIds = {};
 
   Future<void> fetchServices({String? keyword, String? category}) async {
     setState(() {

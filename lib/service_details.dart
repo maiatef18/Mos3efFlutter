@@ -27,8 +27,8 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
 
   void loadData() async {
     service = await fetchServiceById(widget.id);
-
     List saved = await api.getSavedServices();
+
     if (saved.any((s) => s['serviceId'] == widget.id)) {
       isFavorite = true;
     }
@@ -38,16 +38,12 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
 
   Future<void> toggleFavorite() async {
     if (service == null) return;
-    setState(() {
-      isLoadingFavorite = true;
-    });
+    setState(() => isLoadingFavorite = true);
 
     if (!isFavorite) {
       bool success = await api.addToSaved(service!['serviceId']);
       if (success) {
-        setState(() {
-          isFavorite = true;
-        });
+        setState(() => isFavorite = true);
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('تمت الإضافة للمفضلة')));
@@ -59,9 +55,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
     } else {
       bool success = await api.removeFromSaved(service!['serviceId']);
       if (success) {
-        setState(() {
-          isFavorite = false;
-        });
+        setState(() => isFavorite = false);
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('تم الحذف من المفضلة')));
@@ -72,9 +66,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
       }
     }
 
-    setState(() {
-      isLoadingFavorite = false;
-    });
+    setState(() => isLoadingFavorite = false);
   }
 
   @override
@@ -87,9 +79,14 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           backgroundColor: Colors.white,
           elevation: 0,
           automaticallyImplyLeading: false,
+          centerTitle: false,
 
-          title: Image.asset("Image/Logo.png", height: 45),
+          title: Align(
+            alignment: Alignment.centerLeft,
+            child: Image.asset("Image/Logo.png", height: 45),
+          ),
         ),
+
         body: service == null
             ? const Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
@@ -115,6 +112,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                   fit: BoxFit.cover,
                                 ),
                         ),
+
                         Positioned(
                           top: 16,
                           right: 16,
@@ -135,6 +133,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                   onPressed: toggleFavorite,
                                 ),
                         ),
+
                         Positioned(
                           bottom: 16,
                           right: 16,
@@ -159,14 +158,16 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                         ),
                       ],
                     ),
+
                     const SizedBox(height: 20),
+
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.lightBlue[100]!.withOpacity(0.3),
+                            color: Colors.blue.withOpacity(0.3),
                             blurRadius: 10,
                             offset: const Offset(0, 5),
                           ),
@@ -187,7 +188,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                           _buildInfoRow(
                             icon: Icons.price_check,
                             title: 'السعر',
-                            value: '${service!['price'] ?? ''} جنيه',
+                            value: '${service!['price']} جنيه',
                           ),
                           _buildInfoRow(
                             icon: Icons.access_time,
@@ -210,6 +211,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                   ],
                 ),
               ),
+
         bottomNavigationBar: Container(
           color: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -218,33 +220,24 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
             children: [
               IconButton(
                 icon: const Icon(Icons.person_outline, color: Colors.blue),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => PatientProfileScreen()),
-                  );
-                },
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => PatientProfileScreen()),
+                ),
               ),
-
               IconButton(
                 icon: const Icon(Icons.favorite_border, color: Colors.blue),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => MySavedServicesPage()),
-                  );
-                },
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => MySavedServicesPage()),
+                ),
               ),
               IconButton(
                 icon: const Icon(Icons.home, color: Colors.blue),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => HomePagem(),
-                    ), // your home page
-                  );
-                },
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => HomePagem()),
+                ),
               ),
             ],
           ),
@@ -267,7 +260,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
       ),
       child: Row(
         children: [
-          Icon(icon, color: const Color(0xFF89CFF0)),
+          Icon(icon, color: Colors.blue),
           const SizedBox(width: 12),
           Expanded(
             flex: 2,
