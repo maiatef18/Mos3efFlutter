@@ -61,9 +61,6 @@ class SavedServicesApi {
       },
     );
 
-    print("Status: ${response.statusCode}");
-    print("Body: ${response.body}");
-
     return response.statusCode == 200 ||
         response.statusCode == 201 ||
         response.statusCode == 204;

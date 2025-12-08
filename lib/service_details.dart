@@ -16,7 +16,6 @@ class ServiceDetailsPage extends StatefulWidget {
 class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
   Map<String, dynamic>? service;
   bool isFavorite = false;
-  bool isLoadingFavorite = false;
   final SavedServicesApi api = SavedServicesApi();
 
   @override
@@ -36,37 +35,42 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
     setState(() {});
   }
 
-  Future<void> toggleFavorite() async {
+  void toggleFavorite() async {
     if (service == null) return;
-    setState(() => isLoadingFavorite = true);
 
-    if (!isFavorite) {
+    setState(() {
+      isFavorite = !isFavorite;
+    });
+
+    if (isFavorite) {
       bool success = await api.addToSaved(service!['serviceId']);
-      if (success) {
-        setState(() => isFavorite = true);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('تمت الإضافة للمفضلة')));
-      } else {
+      if (!success) {
+        setState(() {
+          isFavorite = false;
+        });
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('فشل في إضافة الخدمة')));
-      }
-    } else {
-      bool success = await api.removeFromSaved(service!['serviceId']);
-      if (success) {
-        setState(() => isFavorite = false);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('تم الحذف من المفضلة')));
       } else {
         ScaffoldMessenger.of(
           context,
+        ).showSnackBar(const SnackBar(content: Text('تمت الإضافة للمفضلة')));
+      }
+    } else {
+      bool success = await api.removeFromSaved(service!['serviceId']);
+      if (!success) {
+        setState(() {
+          isFavorite = true;
+        });
+        ScaffoldMessenger.of(
+          context,
         ).showSnackBar(const SnackBar(content: Text('فشل في حذف الخدمة')));
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('تم الحذف من المفضلة')));
       }
     }
-
-    setState(() => isLoadingFavorite = false);
   }
 
   @override
@@ -78,15 +82,12 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
-          automaticallyImplyLeading: false,
           centerTitle: false,
-
           title: Align(
             alignment: Alignment.centerLeft,
             child: Image.asset("Image/Logo.png", height: 45),
           ),
         ),
-
         body: service == null
             ? const Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
@@ -112,28 +113,20 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                                   fit: BoxFit.cover,
                                 ),
                         ),
-
                         Positioned(
                           top: 16,
                           right: 16,
-                          child: isLoadingFavorite
-                              ? const CircularProgressIndicator(
-                                  color: Colors.red,
-                                )
-                              : IconButton(
-                                  icon: Icon(
-                                    isFavorite
-                                        ? Icons.favorite
-                                        : Icons.favorite_border,
-                                    color: isFavorite
-                                        ? Colors.red
-                                        : Colors.white,
-                                    size: 30,
-                                  ),
-                                  onPressed: toggleFavorite,
-                                ),
+                          child: IconButton(
+                            icon: Icon(
+                              isFavorite
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: isFavorite ? Colors.red : Colors.white,
+                              size: 30,
+                            ),
+                            onPressed: toggleFavorite,
+                          ),
                         ),
-
                         Positioned(
                           bottom: 16,
                           right: 16,
@@ -158,9 +151,7 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 20),
-
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -211,7 +202,6 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
                   ],
                 ),
               ),
-
         bottomNavigationBar: Container(
           color: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 10),
