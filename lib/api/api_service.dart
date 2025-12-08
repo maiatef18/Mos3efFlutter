@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ApiService {
   final String baseUrl = "http://10.0.2.2:5000/api";
 
-  // ================= Register =================
+  
   Future<bool> registerUser({
     required String name,
     required String email,
@@ -35,7 +35,7 @@ class ApiService {
     }
   }
 
-  // ================= Login =================
+  
   Future<bool> loginUser({
     required String email,
     required String password,
@@ -54,9 +54,9 @@ class ApiService {
       final data = jsonDecode(response.body);
 
       if (data['isSuccess'] == true) {
-        final token = data['token']; // extract the token
+        final token = data['token']; 
 
-        // Save token locally
+        
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('auth_token', token);
         await prefs.setString('userId', data['userId']);
@@ -72,7 +72,7 @@ class ApiService {
     }
   }
 
-  // ================= Search Services =================
+  
   Future<List<dynamic>> searchServices({
     String? keyword,
     String? category,
@@ -89,7 +89,7 @@ class ApiService {
     final uri = Uri.parse(
       '$baseUrl/Services/search',
     ).replace(queryParameters: queryParams);
-    print("Search URL: $uri"); // Debug: check the full URL
+    print("Search URL: $uri"); 
 
     final response = await http.get(uri);
 
@@ -102,7 +102,7 @@ class ApiService {
   }
 }
 
-//rstore token
+
 Future<String?> getToken() async {
   final prefs = await SharedPreferences.getInstance();
   return prefs.getString('auth_token');

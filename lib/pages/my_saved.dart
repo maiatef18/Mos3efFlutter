@@ -38,7 +38,7 @@ class _MySavedServicesPageState extends State<MySavedServicesPage> {
         services.removeWhere((s) => s["serviceId"] == serviceId);
       });
 
-      // Use ScaffoldMessenger from the nearest Scaffold
+      
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("The service has been removed from saved services."),
@@ -64,7 +64,7 @@ class _MySavedServicesPageState extends State<MySavedServicesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // ---------------- APP BAR ----------------
+    
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -81,13 +81,13 @@ class _MySavedServicesPageState extends State<MySavedServicesPage> {
                       padding: const EdgeInsets.only(
                         top: 20,
                         bottom: 80,
-                      ), // ← top and bottom spacing
+                      ), 
 
                       itemCount: services.length,
                       itemBuilder: (context, index) {
                         final item = services[index];
 
-                        // Fallbacks for null values
+                        
                         final hospitalName = item["hospitalName"] ?? "";
                         final description = item["description"] ?? "";
                         final imageUrl =
@@ -118,7 +118,7 @@ class _MySavedServicesPageState extends State<MySavedServicesPage> {
                             border: const Border(
                               left: BorderSide(
                                 color: Colors.blue,
-                                width: 5, // ← BLUE EDGE LIKE VEZEETA
+                                width: 5, 
                               ),
                             ),
                           ),
@@ -127,7 +127,7 @@ class _MySavedServicesPageState extends State<MySavedServicesPage> {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // IMAGE
+                                
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(12),
                                   child: Image.network(
@@ -140,13 +140,13 @@ class _MySavedServicesPageState extends State<MySavedServicesPage> {
 
                                 const SizedBox(width: 14),
 
-                                // CONTENT
+                                
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      // TOP ROW → Title + Price at the right
+                                      
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -162,7 +162,7 @@ class _MySavedServicesPageState extends State<MySavedServicesPage> {
                                             ),
                                           ),
 
-                                          // PRICE (Top Right Vezeeta Style)
+                                        
                                           Container(
                                             padding: const EdgeInsets.symmetric(
                                               horizontal: 10,
@@ -187,7 +187,7 @@ class _MySavedServicesPageState extends State<MySavedServicesPage> {
 
                                       const SizedBox(height: 6),
 
-                                      // Hospital name blue
+                                      
                                       if (hospitalName.isNotEmpty)
                                         Text(
                                           hospitalName,
@@ -200,7 +200,7 @@ class _MySavedServicesPageState extends State<MySavedServicesPage> {
 
                                       const SizedBox(height: 6),
 
-                                      // Description
+                                      
                                       if (description.isNotEmpty)
                                         Text(
                                           description,
@@ -214,7 +214,7 @@ class _MySavedServicesPageState extends State<MySavedServicesPage> {
 
                                       const SizedBox(height: 10),
 
-                                      // Availability + Hours Row
+                                      
                                       Row(
                                         children: [
                                           if (availability.isNotEmpty)
@@ -259,7 +259,7 @@ class _MySavedServicesPageState extends State<MySavedServicesPage> {
 
                                       const SizedBox(height: 10),
 
-                                      // CATEGORY TAG
+                                      
                                       if (category.isNotEmpty)
                                         Container(
                                           padding: const EdgeInsets.symmetric(
@@ -285,7 +285,7 @@ class _MySavedServicesPageState extends State<MySavedServicesPage> {
                                   ),
                                 ),
 
-                                // REMOVE BUTTON (heart)
+                                
                                 IconButton(
                                   icon: const Icon(
                                     Icons.favorite,
@@ -306,7 +306,7 @@ class _MySavedServicesPageState extends State<MySavedServicesPage> {
                     ),
             ),
 
-      /// --------------- NAVIGATION BAR ---------------
+      
       bottomNavigationBar: Container(
         color: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 10),
@@ -320,7 +320,7 @@ class _MySavedServicesPageState extends State<MySavedServicesPage> {
                   context,
                   MaterialPageRoute(
                     builder: (_) => HomePagem(),
-                  ), // your home page
+                  ), 
                 );
               },
             ),
