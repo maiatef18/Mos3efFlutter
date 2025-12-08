@@ -1,30 +1,45 @@
 import 'package:flutter/material.dart';
-import 'api_service.dart';
-import 'register_page.dart';
-import 'Home_page.dart';
+import '/api/api_service.dart';
+import 'login_page.dart';
 
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   final ApiService api;
 
-  const LoginPage({super.key, required this.api});
+  const RegisterPage({super.key, required this.api});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmTextController = TextEditingController();
 
   bool _loading = false;
   String _message = "";
 
-  void _login() async {
+  void _register() async {
+    String name = _nameController.text.trim();
     String email = _emailController.text.trim();
     String password = _passwordController.text;
+    String confirmPassword = _confirmTextController.text;
 
-    if (email.isEmpty || password.isEmpty) {
-      setState(() => _message = "يرجى إدخال البريد الإلكتروني وكلمة المرور");
+    if (name.length < 3) {
+      setState(() => _message = "Name must be at least 3 characters");
+      return;
+    }
+    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+      setState(() => _message = "Please enter a valid email");
+      return;
+    }
+    if (password.length < 6) {
+      setState(() => _message = "Password must be at least 6 characters");
+      return;
+    }
+    if (password != confirmPassword) {
+      setState(() => _message = "Passwords do not match");
       return;
     }
 
@@ -33,21 +48,26 @@ class _LoginPageState extends State<LoginPage> {
       _message = "";
     });
 
-    bool success = await widget.api.loginUser(email: email, password: password);
+    bool success = await widget.api.registerUser(
+      name: name,
+      email: email,
+      password: password,
+      confirmPassword: confirmPassword,
+    );
 
     setState(() => _loading = false);
 
     if (success) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text("تم تسجيل الدخول بنجاح")));
+      ).showSnackBar(SnackBar(content: Text("Registered successfully!")));
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const HomePagem()),
+        MaterialPageRoute(builder: (_) => LoginPage(api: widget.api)),
       );
     } else {
-      setState(() => _message = "البريد الإلكتروني أو كلمة المرور غير صحيحة");
+      setState(() => _message = "Registration failed!");
     }
   }
 
@@ -70,14 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                     Row(
                       children: [
                         GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => RegisterPage(api: widget.api),
-                              ),
-                            );
-                          },
+                          onTap: () {},
                           child: Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: 15,
@@ -99,7 +112,14 @@ class _LoginPageState extends State<LoginPage> {
 
                         SizedBox(width: 10),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => LoginPage(api: widget.api),
+                              ),
+                            );
+                          },
                           child: Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: 15,
@@ -127,9 +147,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-              SizedBox(height: 30),
-
-              // ---------------- BODY ----------------
               Expanded(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(16),
@@ -149,7 +166,18 @@ class _LoginPageState extends State<LoginPage> {
                         fit: BoxFit.cover,
                       ),
 
-                      SizedBox(height: 25),
+                      SizedBox(height: 20),
+                      TextField(
+                        controller: _nameController,
+                        decoration: InputDecoration(
+                          labelText: "الاسم",
+                          prefixIcon: Icon(Icons.person),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
 
                       TextField(
                         controller: _emailController,
@@ -161,8 +189,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-
-                      SizedBox(height: 15),
+                      SizedBox(height: 10),
 
                       TextField(
                         controller: _passwordController,
@@ -175,14 +202,26 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
+                      SizedBox(height: 10),
 
-                      SizedBox(height: 25),
+                      TextField(
+                        controller: _confirmTextController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          labelText: "تأكيد كلمة المرور",
+                          prefixIcon: Icon(Icons.lock_outline),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 20),
 
                       GestureDetector(
-                        onTap: _loading ? null : _login,
+                        onTap: _register,
                         child: Container(
                           padding: EdgeInsets.symmetric(vertical: 15),
-                          width: double.infinity,
                           decoration: BoxDecoration(
                             color: Colors.blue,
                             borderRadius: BorderRadius.circular(20),
@@ -191,9 +230,9 @@ class _LoginPageState extends State<LoginPage> {
                             child: _loading
                                 ? CircularProgressIndicator(color: Colors.white)
                                 : Text(
-                                    "دخول",
+                                    "تسجيل",
                                     style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                     ),
@@ -203,7 +242,6 @@ class _LoginPageState extends State<LoginPage> {
                       ),
 
                       SizedBox(height: 20),
-
                       Text(
                         _message,
                         style: TextStyle(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'api_profile.dart';
+import '/api/api_profile.dart';
+import 'Home_page.dart';
+import 'my_saved.dart';
 
 class PatientProfileScreen extends StatefulWidget {
   const PatientProfileScreen({super.key});
@@ -13,13 +15,11 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   final _passwordFormKey = GlobalKey<FormState>();
 
-  
   final name = TextEditingController();
   final email = TextEditingController();
   final phone = TextEditingController();
   final address = TextEditingController();
 
-  
   final currentPass = TextEditingController();
   final newPass = TextEditingController();
   final confirmPass = TextEditingController();
@@ -58,7 +58,13 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
     setState(() => loading = false);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(res["success"] == true ? "تم تحديث البيانات بنجاح" : res["message"] ?? "حدث خطأ")),
+      SnackBar(
+        content: Text(
+          res["success"] == true
+              ? "تم تحديث البيانات بنجاح"
+              : res["message"] ?? "حدث خطأ",
+        ),
+      ),
     );
   }
 
@@ -76,7 +82,13 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
     setState(() => loading = false);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(res["success"] == true ? "تم تغيير كلمة المرور بنجاح" : res["message"] ?? "فشل تغيير كلمة المرور")),
+      SnackBar(
+        content: Text(
+          res["success"] == true
+              ? "تم تغيير كلمة المرور بنجاح"
+              : res["message"] ?? "فشل تغيير كلمة المرور",
+        ),
+      ),
     );
 
     if (res["success"] == true) {
@@ -91,6 +103,19 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
+        backgroundColor: Colors.grey[100],
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          centerTitle: false,
+
+          title: Align(
+            alignment: Alignment.centerLeft,
+            child: Image.asset("Image/Logo.png", height: 45),
+          ),
+        ),
+
         body: SafeArea(
           child: loading
               ? const Center(child: CircularProgressIndicator())
@@ -108,7 +133,6 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                       ),
                       const SizedBox(height: 20),
 
-                      
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
@@ -121,14 +145,21 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                             children: [
                               _arabicField(name, "الاسم الكامل", Icons.person),
                               const SizedBox(height: 10),
-                              _arabicField(email, "البريد الإلكتروني", Icons.email),
+                              _arabicField(
+                                email,
+                                "البريد الإلكتروني",
+                                Icons.email,
+                              ),
                               const SizedBox(height: 10),
                               _arabicField(phone, "رقم الهاتف", Icons.phone),
                               const SizedBox(height: 10),
-                              _arabicField(address, "العنوان", Icons.location_on),
+                              _arabicField(
+                                address,
+                                "العنوان",
+                                Icons.location_on,
+                              ),
                               const SizedBox(height: 20),
 
-                            
                               Form(
                                 key: _passwordFormKey,
                                 child: Column(
@@ -136,27 +167,52 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                                   children: [
                                     const Text(
                                       "تغيير كلمة المرور",
-                                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                     const SizedBox(height: 10),
-                                    _smallPasswordField(currentPass, "كلمة المرور الحالية"),
+                                    _smallPasswordField(
+                                      currentPass,
+                                      "كلمة المرور الحالية",
+                                    ),
                                     const SizedBox(height: 8),
-                                    _smallPasswordField(newPass, "كلمة المرور الجديدة"),
+                                    _smallPasswordField(
+                                      newPass,
+                                      "كلمة المرور الجديدة",
+                                    ),
                                     const SizedBox(height: 8),
-                                    _smallPasswordField(confirmPass, "تأكيد كلمة المرور الجديدة"),
+                                    _smallPasswordField(
+                                      confirmPass,
+                                      "تأكيد كلمة المرور الجديدة",
+                                    ),
                                     const SizedBox(height: 10),
                                     GestureDetector(
                                       onTap: changePassword,
                                       child: Container(
-                                        padding: const EdgeInsets.symmetric(vertical: 10),
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 10,
+                                        ),
                                         decoration: BoxDecoration(
-                                          color: const Color.fromARGB(255, 139, 195, 240),
-                                          borderRadius: BorderRadius.circular(15),
+                                          color:Colors.blue,
+                                          borderRadius: BorderRadius.circular(
+                                            15,
+                                          ),
                                         ),
                                         child: const Center(
                                           child: Text(
                                             "تغيير كلمة المرور",
-                                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 1, 13, 33)),
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color.fromARGB(
+                                                255,
+                                                1,
+                                                13,
+                                                33,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -167,19 +223,24 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
 
                               const SizedBox(height: 20),
 
-                              
                               GestureDetector(
                                 onTap: saveProfile,
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 15),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 15,
+                                  ),
                                   decoration: BoxDecoration(
-                                    color: const Color.fromARGB(255, 139, 195, 240),
+                                    color:Colors.blue,
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: const Center(
                                     child: Text(
                                       "حفظ التغييرات",
-                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 1, 13, 33)),
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color.fromARGB(255, 1, 13, 33),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -192,18 +253,64 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                   ),
                 ),
         ),
+        bottomNavigationBar: Container(
+          color: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.person_outline, color: Colors.blue),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => PatientProfileScreen()),
+                  );
+                },
+              ),
+
+              IconButton(
+                icon: const Icon(Icons.favorite_border, color: Colors.blue),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => MySavedServicesPage()),
+                  );
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.home, color: Colors.blue),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => HomePagem(),
+                    ), // your home page
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Widget _arabicField(TextEditingController controller, String label, IconData icon) {
+  Widget _arabicField(
+    TextEditingController controller,
+    String label,
+    IconData icon,
+  ) {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
         prefixIcon: Icon(icon),
         labelText: label,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
-        contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 15,
+          horizontal: 15,
+        ),
       ),
       validator: (v) => v!.trim().isEmpty ? "هذا الحقل مطلوب" : null,
     );
@@ -217,7 +324,10 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
         prefixIcon: const Icon(Icons.lock, size: 18),
         labelText: label,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),
-        contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 10,
+          horizontal: 10,
+        ),
       ),
       style: const TextStyle(fontSize: 14),
       validator: (v) => v!.trim().isEmpty ? "هذا الحقل مطلوب" : null,
